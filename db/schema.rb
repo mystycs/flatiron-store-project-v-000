@@ -11,7 +11,52 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160730213248) do
+ActiveRecord::Schema.define(version: 20160730213918) do
+
+  create_table "carts", force: :cascade do |t|
+    t.integer  "user_id"
+    t.string   "status",     default: "not submitted"
+    t.datetime "created_at",                           null: false
+    t.datetime "updated_at",                           null: false
+  end
+
+  add_index "carts", ["user_id"], name: "index_carts_on_user_id"
+
+  create_table "categories", force: :cascade do |t|
+    t.string   "title"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "items", force: :cascade do |t|
+    t.integer  "category_id"
+    t.string   "title"
+    t.integer  "inventory"
+    t.integer  "price"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  add_index "items", ["category_id"], name: "index_items_on_category_id"
+
+  create_table "line_items", force: :cascade do |t|
+    t.integer  "cart_id"
+    t.integer  "item_id"
+    t.integer  "quantity",   default: 1
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "line_items", ["cart_id"], name: "index_line_items_on_cart_id"
+  add_index "line_items", ["item_id"], name: "index_line_items_on_item_id"
+
+  create_table "orders", force: :cascade do |t|
+    t.integer  "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "orders", ["user_id"], name: "index_orders_on_user_id"
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "", null: false
@@ -26,6 +71,7 @@ ActiveRecord::Schema.define(version: 20160730213248) do
     t.string   "last_sign_in_ip"
     t.datetime "created_at",                          null: false
     t.datetime "updated_at",                          null: false
+    t.integer  "current_cart_id"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true
